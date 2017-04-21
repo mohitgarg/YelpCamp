@@ -1,0 +1,8 @@
+<h1>This is a campgrounds page</h1>
+
+<% campgrounds.map(function(item){ %>
+    <div>
+        <h4><%= item.name%></h4>
+        <img src=<%= item.image%> alt="camp image">
+    </div>
+<% })%>
