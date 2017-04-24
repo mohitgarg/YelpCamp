@@ -1,6 +1,6 @@
-var mongoose = require('mongoose')
-var Campground = require('./models/campground')
-var Comment = require('./models/comment')
+var mongoose = require("mongoose");
+var Campground = require("./models/campground");
+var Comment   = require("./models/comment");
 
 var data = [
     {
@@ -10,7 +10,7 @@ var data = [
     },
     {
         name: "Desert Mesa",
-        image: "https://farm4.staticflickr.com/3859/15123592300_6eecab209b.jpg",
+        image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg",
         description: "blah blah blah"
     },
     {
@@ -20,35 +20,39 @@ var data = [
     }
 ]
 
-function seedDB() {
-    // Remove all Campgrounds
-    Campground.remove({}, function (err) {
-        if (err) {
-            console.log(err)
+function seedDB(){
+    //Remove all campgrounds
+    Campground.remove({}, function(err){
+        if(err){
+            console.log(err);
         }
-        console.log('Campgrounds Removed')
-        data.forEach(function (item) {
-            Campground.create(item,function (err, camp) {
+        console.log("removed campgrounds!");
+        //add a few campgrounds
+        data.forEach(function(seed){
+            Campground.create(seed, function(err, campground){
                 if(err){
                     console.log(err)
                 } else {
-                    console.log(camp)
-                    Comment.create({
-                        text:'I wish we had internet in this place',
-                        author:'John Doe'
-                    }, function (err, comment) {
-                        if(err){
-                            console.log(err)
-                        }else {
-                            camp.comment.push(comment)
-                            camp.save();
-                            console.log('New Comment Created')
-                        }
-                    })
+                    console.log("added a campground");
+                    //create a comment
+                    Comment.create(
+                      {
+                          text: "This place is great, but I wish there was internet",
+                          author: "Homer"
+                      }, function(err, comment){
+                          if(err){
+                              console.log('Can not create a comment'+err);
+                          } else {
+                              campground.comments.push(comment);
+                              campground.save();
+                              console.log("Created new comment");
+                          }
+                      });
                 }
-            })
-        })
-    })
+            });
+        });
+    });
+    //add a few comments
 }
 
 module.exports = seedDB;
