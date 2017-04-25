@@ -11,17 +11,17 @@ app.set('view engine', 'ejs')
 seedDB();
 
 
-var campgrounds = [
-    {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
-    {name: "Granite Hill", image: "https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg"},
-    {name: "Mountain Goat's Rest", image: "https://farm7.staticflickr.com/6057/6234565071_4d20668bbd.jpg"},
-    {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
-    {name: "Granite Hill", image: "https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg"},
-    {name: "Mountain Goat's Rest", image: "https://farm7.staticflickr.com/6057/6234565071_4d20668bbd.jpg"},
-    {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
-    {name: "Granite Hill", image: "https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg"},
-    {name: "Mountain Goat's Rest", image: "https://farm7.staticflickr.com/6057/6234565071_4d20668bbd.jpg"}
-];
+// var campgrounds = [
+//     {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
+//     {name: "Granite Hill", image: "https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg"},
+//     {name: "Mountain Goat's Rest", image: "https://farm7.staticflickr.com/6057/6234565071_4d20668bbd.jpg"},
+//     {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
+//     {name: "Granite Hill", image: "https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg"},
+//     {name: "Mountain Goat's Rest", image: "https://farm7.staticflickr.com/6057/6234565071_4d20668bbd.jpg"},
+//     {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
+//     {name: "Granite Hill", image: "https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg"},
+//     {name: "Mountain Goat's Rest", image: "https://farm7.staticflickr.com/6057/6234565071_4d20668bbd.jpg"}
+// ];
 
 
 app.get('/', function (req, res) {
@@ -32,7 +32,7 @@ app.get('/campgrounds', function (req, res) {
         if (err) {
             console.log('Error Occurred')
         } else {
-            res.render('index', {campgrounds: allcampgrounds})
+            res.render('campgrounds/index', {campgrounds: allcampgrounds})
         }
     })
 })
@@ -56,18 +56,25 @@ app.post('/campgrounds', function (req, res) {
 })
 
 app.get('/campgrounds/new', function (req, res) {
-    res.render('new')
+    res.render('campgrounds/new')
 })
 // Show Route
 app.get('/campgrounds/:id', function (req, res) {
-    Campground.findById(req.params.id).populate('comments').exec(function (err, foundCamp) {
+    Campground.findById(req.params.id).populate('comments').exec(function(err, foundCamp) {
         if (err) {
             console.log(err)
         } else {
-            res.render('show', {campground:foundCamp})
+            console.log(foundCamp)
+            res.render('campgrounds/show', {campground:foundCamp})
         }
     })
 })
+
+// ========= Comment Routes ======
+app.get('/campgrounds/:id/comments/new', function (req, res) {
+    res.render('comments/new')
+})
+
 app.listen(3000, function () {
     console.log('Server is running on port 3000')
 });
