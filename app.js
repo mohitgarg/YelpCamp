@@ -2,8 +2,11 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport')
+var LocalStrategy = require('passport-local')
 var Campground = require('./models/campground')
 var Comment = require('./models/comment')
+var User = require('./models/user')
 var seedDB = require('./seeds')
 
 mongoose.connect('mongodb://localhost/yelp_camp')
@@ -12,6 +15,17 @@ app.use(express.static(__dirname + '/public'))
 app.set('view engine', 'ejs')
 seedDB();
 
+//Passport Configuration
+app.use(require('express-session')({
+    secret:'I am the best',
+    resave: false,
+    saveUninitialized:false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 // var campgrounds = [
 //     {name: "Salmon Creek", image: "https://farm9.staticflickr.com/8442/7962474612_bf2baf67c0.jpg"},
@@ -103,6 +117,35 @@ app.post('/campgrounds/:id/comments',function (req, res) {
     })
 })
 
+// ==== Auth Routes =====
+
+app.get('/register', function (req, res) {
+    res.render('register')
+})
+// === Register User===
+app.post('/register', function (req, res) {
+    User.register(new User({username: req.body.username}), req.body.password,function (err, user) {
+        if(err) {
+            console.log(err)
+            return res.render('/register')
+        } else {
+            passport.authenticate('local')(req, res, function () {
+                res.redirect('/campgrounds')
+            })
+        }
+    })
+})
+// === Show Login Forum===
+app.get('/login', function (req, res) {
+    res.render('login')
+})
+app.post('/login',passport.authenticate('local',{
+   successRedirect:'/campgrounds',
+    failureRedirect:'/login'
+
+}),function (req, res) {
+    res.send('Login Succesful')
+})
 app.listen(3000, function () {
     console.log('Server is running on port 3000')
 });
