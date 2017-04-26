@@ -14,19 +14,19 @@ router.get('/', function (req, res) {
 })
 
 // Create Route - Add new campground to DB
-router.post('/',isLoggedIn, function (req, res) {
+router.post('/', isLoggedIn, function (req, res) {
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
     var author = {
         id: req.user._id,
-        username:req.user.username
+        username: req.user.username
     }
     var newCampground = {
         name: name,
         image: image,
-        description:description,
-        author:author
+        description: description,
+        author: author
     }
     Campground.create(newCampground, function (err, item) {
         if (err) {
@@ -38,44 +38,45 @@ router.post('/',isLoggedIn, function (req, res) {
 })
 
 // New - Show from to create new route
-router.get('/new',isLoggedIn,function (req, res) {
+router.get('/new', isLoggedIn, function (req, res) {
     res.render('campgrounds/new')
 })
 // Show Route
 router.get('/:id', function (req, res) {
-    Campground.findById(req.params.id).populate('comments').exec(function(err, foundCamp) {
+    Campground.findById(req.params.id).populate('comments').exec(function (err, foundCamp) {
         if (err) {
             console.log(err)
         } else {
             console.log(foundCamp)
-            res.render('campgrounds/show', {campground:foundCamp})
+            res.render('campgrounds/show', {campground: foundCamp})
         }
     })
 })
 //Edit Campground
-router.get('/:id/edit', function (req, res) {
-    Campground.findById(req.params.id, function (err, foundCampground) {
-        if(err){
-            res.redirect('/campgrounds')
-        } else {
-            res.render('campgrounds/edit',{ campground:foundCampground})
-        }
-    })
+router.get('/:id/edit',checkCampgroundOwnership,function (req, res) {
+        Campground.findById(req.params.id, function (err, foundCampground) {
+            if (err) {
+                res.redirect('/campgrounds')
+            } else {
+                res.render('campgrounds/edit', {campground: foundCampground})
+            }
+        })
+
 })
 //Update Campground
-router.put('/:id', function (req, res) {
+router.put('/:id', checkCampgroundOwnership,function (req, res) {
     Campground.findByIdAndUpdate(req.params.id, req.body.updatedData, function (err, updatedCampground) {
-        if(err){
+        if (err) {
             res.redirect('/campgrounds')
         } else {
-            res.redirect('/campgrounds/'+ req.params.id)
+            res.redirect('/campgrounds/' + req.params.id)
         }
     })
 })
 // Delete Campground
-router.delete('/:id', function (req, res) {
-    Campground.findByIdAndRemove(req.params.id,function (err) {
-        if(err){
+router.delete('/:id',checkCampgroundOwnership,function (req, res) {
+    Campground.findByIdAndRemove(req.params.id, function (err) {
+        if (err) {
             res.redirect('/campgrounds')
         } else {
             res.redirect('/campgrounds')
@@ -84,11 +85,30 @@ router.delete('/:id', function (req, res) {
 })
 
 function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         return next();
     } else {
         res.redirect('/login')
     }
 }
 
+function checkCampgroundOwnership(req, res, next) {
+    if (req.isAuthenticated()) {
+        Campground.findById(req.params.id, function (err, foundCampground) {
+            if (err) {
+                res.redirect('back')
+            } else {
+                console.log(typeof foundCampground.author.id) // Both Seems to be the same but this is an Object
+                console.log(typeof req.user.id) // And this is a string
+                if (foundCampground.author.id.equals(req.user.id)) {
+                    next()
+                } else {
+                    res.redirect('back')
+                }
+            }
+        })
+    } else {
+       res.redirect('back')
+    }
+}
 module.exports = router
