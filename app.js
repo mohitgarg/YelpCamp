@@ -17,7 +17,7 @@ var campgroundRoutes = require('./routes/campgrounds')
 var commentRoutes = require('./routes/comments')
 var indexRoutes = require('./routes/index')
 
-mongoose.connect('mongodb://mohit:password@ds011725.mlab.com:11725/yelpcamp_mohit')
+mongoose.connect(process.env.DATABASEURL)
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static(__dirname + '/public'))
 app.set('view engine', 'ejs')
