@@ -1,25 +1,34 @@
 {
   "name": "yelpcamp",
-  "version": "1",
-  "description": "A small website with Node and Express",
-  "main": "index.js",
-  "repository": "https://github.com/mohitgarg/YelpCamp.git",
-  "author": "Mohit Garg <gargmohit@live.in>",
-  "license": "MIT",
+  "version": "1.0.0",
+  "description": "A website for campers",
+  "main": "app.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start":"node app.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohitgarg/YelpCamp.git"
+  },
+  "author": "Mohit Garg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mohitgarg/YelpCamp/issues"
+  },
+  "homepage": "https://github.com/mohitgarg/YelpCamp#readme",
   "dependencies": {
-    "body-parser": "^1.14.1",
     "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.3",
-    "ejs": "^2.3.4",
-    "express": "^4.13.3",
-    "express-session": "^1.15.2",
-    "method-override": "^2.3.8",
-    "mongoose": "^4.1.12",
-    "passport": "^0.3.2",
-    "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^4.0.0"
-  }
+      "body-parser": "^1.14.1",
+      "connect-flash": "^0.1.1",
+      "cookie-parser": "^1.4.3",
+      "ejs": "^2.3.4",
+      "express": "^4.13.3",
+      "express-session": "^1.15.2",
+      "method-override": "^2.3.8",
+      "mongoose": "^4.1.12",
+      "passport": "^0.3.2",
+      "passport-local": "^1.0.0",
+      "passport-local-mongoose": "^4.0.0"
+    }
 }
